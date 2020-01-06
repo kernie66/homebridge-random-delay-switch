@@ -1,6 +1,6 @@
 
-
-var inherits = require('util').inherits;
+var version = require("package").version;
+var inherits = require("util").inherits;
 var Service, Characteristic;
 
 module.exports = function (homebridge) {
@@ -28,7 +28,7 @@ delaySwitch.prototype.getServices = function () {
     informationService
         .setCharacteristic(Characteristic.Manufacturer, "Delay Manufacturer")
         .setCharacteristic(Characteristic.Model, "Delay Model")
-        .setCharacteristic(Characteristic.SerialNumber, "Delay Serial Number");
+        .setCharacteristic(Characteristic.SerialNumber, version);
 
 
     this.switchService = new Service.Switch(this.name);
