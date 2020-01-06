@@ -13,9 +13,9 @@ module.exports = function (homebridge) {
 
 function delaySwitch(log, config) {
     this.log = log;
-    this.name = config['name'];
-    this.delay = config['delay'];
-    this.disableSensor = config['disableSensor'] || false;
+    this.name = config.name;
+    this.delay = config.delay;
+    this.disableSensor = config.disableSensor || false;
     this.timer;
     this.switchOn = false;
     this.motionTriggered = false;
@@ -108,7 +108,7 @@ delaySwitch.prototype.setOn = function (on, callback) {
               }.bind(this), 3000);
           }
           
-        }.bind(this), this.delay);
+        }.bind(this), this.delay * 1000);
       }
     
       callback();
