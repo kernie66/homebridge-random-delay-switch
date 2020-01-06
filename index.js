@@ -1,5 +1,6 @@
 
 
+var inherits = require('util').inherits;
 var Service, Characteristic;
 
 module.exports = function (homebridge) {
@@ -36,7 +37,30 @@ delaySwitch.prototype.getServices = function () {
     this.switchService.getCharacteristic(Characteristic.On)
         .on('get', this.getOn.bind(this))
         .on('set', this.setOn.bind(this));
-    
+ 
+    // DelaySwitchTimeout Characteristic
+    Characteristic.DelaySwitchTimeout = function () {
+      Characteristic.call(this, 'Delay', 'B469181F-D796-46B4-8D99-5FBE4BA9DC9C');
+
+      this.setProps({
+        format: Characteristic.Formats.INT,
+        unit: Characteristic.Units.SECONDS,
+        perms: [Characteristic.Perms.READ, Characteristic.Perms.WRITE],
+        minValue: 1,
+        maxValue: 3600,
+      });
+
+      this.value = this.getDefaultValue();
+    };
+    inherits(Characteristic.DelaySwitchTimeout, Characteristic);
+    Characteristic.DelaySwitchTimeout.UUID = 'B469181F-D796-46B4-8D99-5FBE4BA9DC9C';
+
+    this.switchService.addCharacteristic(Characteristic.DelaySwitchTimeout);
+    this.switchService.updateCharacteristic(Characteristic.DelaySwitchTimeout, this.delay);
+    this.switchService.getCharacteristic(Characteristic.DelaySwitchTimeout)
+      .on('get', this.getDelay.bind(this))
+      .on('set', this.setDelay.bind(this));
+
     var services = [informationService, this.switchService]
     
     if (!this.disableSensor){
@@ -99,3 +123,13 @@ delaySwitch.prototype.getOn = function (callback) {
 delaySwitch.prototype.getMotion = function(callback) {
     callback(null, this.motionTriggered);
 }
+
+delaySwitch.prototype.getDelay = function (callback) {
+    callback(this.delay);
+}
+
+delaySwitch.prototype.setDelay = function (value, callback) {
+    this.delay = value;
+    callback();
+}
+
