@@ -1,0 +1,33 @@
+{
+    "pluginAlias": "DelaySwitch",
+    "pluginType": "accessory",
+    "headerDisplay": "Delay switch accessory for Homebridge.",
+    "footerDisplay": "For more information see the [README](https://github.com/lisanet/homebridge-delay-switch#readme)",
+    "singular": false,
+    "schema": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "title": "Name",
+                "type": "string",
+                "required": true,
+                "description": "Name of the switch. The motion sensor name will be append with 'Trigger'."
+            },
+            "delay": {
+                "title": "Delay",
+                "type": "integer",
+                "required": true,
+                "default": 60,
+                "minimum": 1,
+                "description": "The delay in seconds after which the motion sensor is triggered. (max. 3600 seconds)"
+            },
+            "disableSensor": {
+                "title": "Disable Sensor",
+                "type": "boolean",
+                "default": false,
+                "description": "The motion sensor will be disabled."
+            }
+        }
+    }
+}
+
