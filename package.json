@@ -1,20 +1,21 @@
 {
-  "name": "homebridge-delay-switch",
-  "version": "2.1.0",
-  "description": "Delay switches for Homebridge: https://github.com/nfarina/homebridge",
-  "license": "ISC",
+  "name": "homebridge-random-delay-switch",
+  "version": "2.2.0",
+  "description": "Delay switch with or witchout a random delay for Homebridge: https://github.com/nfarina/homebridge",
+  "license": "MIT",
   "keywords": [
     "homebridge-plugin",
     "delay",
+    "random",
     "timer",
     "automation"
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/nitaybz/homebridge-delay-switch.git"
+    "url": "git://github.com/lisanet/homebridge-random-delay-switch.git"
   },
   "bugs": {
-    "url": "http://github.com/nitaybz/homebridge-delay-switch/issues"
+    "url": "http://github.com/lisanet/homebridge-random-delay-switch/issues"
   },
   "engines": {
     "node": ">=0.12.0",
