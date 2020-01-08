@@ -1,5 +1,5 @@
 
-var version = require("package").version;
+var version = require("./package").version;
 var inherits = require("util").inherits;
 var Service, Characteristic;
 
@@ -7,7 +7,7 @@ module.exports = function (homebridge) {
     Service = homebridge.hap.Service;
     Characteristic = homebridge.hap.Characteristic;
 
-    homebridge.registerAccessory("homebridge-delay-switch", "DelaySwitch", delaySwitch);
+    homebridge.registerAccessory("homebridge-random-delay-switch", "RandomDelaySwitch", delaySwitch);
 }
 
 
@@ -15,6 +15,9 @@ function delaySwitch(log, config) {
     this.log = log;
     this.name = config.name;
     this.delay = config.delay;
+    if (this.delay > 3600) this.delay = 3600;
+    this.timeout = this.delay;
+    this.isRandom = config.random || false;
     this.disableSensor = config.disableSensor || false;
     this.timer;
     this.switchOn = false;
@@ -26,9 +29,10 @@ delaySwitch.prototype.getServices = function () {
     var informationService = new Service.AccessoryInformation();
 
     informationService
-        .setCharacteristic(Characteristic.Manufacturer, "Delay Manufacturer")
-        .setCharacteristic(Characteristic.Model, "Delay Model")
-        .setCharacteristic(Characteristic.SerialNumber, version);
+        .setCharacteristic(Characteristic.Manufacturer, "Random Delay Manufacturer")
+        .setCharacteristic(Characteristic.Model, "Random Delay Model")
+        .setCharacteristic(Characteristic.SerialNumber, "47.11")
+        .setCharacteristic(Characteristic.FirmwareRevision, version);
 
 
     this.switchService = new Service.Switch(this.name);
@@ -40,17 +44,15 @@ delaySwitch.prototype.getServices = function () {
  
     // DelaySwitchTimeout Characteristic
     Characteristic.DelaySwitchTimeout = function () {
-      Characteristic.call(this, 'Delay', 'B469181F-D796-46B4-8D99-5FBE4BA9DC9C');
-
-      this.setProps({
-        format: Characteristic.Formats.INT,
-        unit: Characteristic.Units.SECONDS,
-        perms: [Characteristic.Perms.READ, Characteristic.Perms.WRITE],
-        minValue: 1,
-        maxValue: 3600,
-      });
-
-      this.value = this.getDefaultValue();
+        Characteristic.call(this, 'Delay', 'B469181F-D796-46B4-8D99-5FBE4BA9DC9C');
+        this.setProps({
+            format: Characteristic.Formats.INT,
+            unit: Characteristic.Units.SECONDS,
+            perms: [Characteristic.Perms.READ, Characteristic.Perms.WRITE],
+            minValue: 1,
+            maxValue: 3600,
+        });
+        this.value = this.getDefaultValue();
     };
     inherits(Characteristic.DelaySwitchTimeout, Characteristic);
     Characteristic.DelaySwitchTimeout.UUID = 'B469181F-D796-46B4-8D99-5FBE4BA9DC9C';
@@ -60,6 +62,23 @@ delaySwitch.prototype.getServices = function () {
     this.switchService.getCharacteristic(Characteristic.DelaySwitchTimeout)
       .on('get', this.getDelay.bind(this))
       .on('set', this.setDelay.bind(this));
+
+    Characteristic.RandomDelay = function () {
+        Characteristic.call(this, 'Random Delay', '72227266-CA42-4442-AB84-0A7D55A0F08D');
+        this.setProps({
+            format: Characteristic.Formats.BOOL,
+            perms: [Characteristic.Perms.READ, Characteristic.Perms.WRITE],
+        });
+        this.value = this.getDefaultValue();
+    };
+    inherits(Characteristic.RandomDelay, Characteristic);
+    Characteristic.RandomDelay.UUID = '72227266-CA42-4442-AB84-0A7D55A0F08D';
+
+    this.switchService.addCharacteristic(Characteristic.RandomDelay);
+    this.switchService.updateCharacteristic(Characteristic.RandomDelay, this.isRandom);
+    this.switchService.getCharacteristic(Characteristic.RandomDelay)
+      .on("get", this.getRandom.bind(this))
+      .on("set", this.setRandom.bind(this));
 
     var services = [informationService, this.switchService]
     
@@ -80,7 +99,7 @@ delaySwitch.prototype.getServices = function () {
 delaySwitch.prototype.setOn = function (on, callback) {
 
     if (!on) {
-        this.log('Stopping the Timer.');
+        this.log('Stopping the timer.');
     
         this.switchOn = false;
         clearTimeout(this.timer);
@@ -89,26 +108,31 @@ delaySwitch.prototype.setOn = function (on, callback) {
 
         
       } else {
-        this.log('Starting the Timer.');
+        this.log('Starting the timer.');
         this.switchOn = true;
     
+        if (this.isRandom) {
+            this.timeout = Math.floor(Math.random() * this.delay + 1);
+        } else {
+            this.timeout = this.delay;
+        }
         clearTimeout(this.timer);
         this.timer = setTimeout(function() {
-          this.log('Time is Up!');
+          this.log('Time is up!');
           this.switchService.getCharacteristic(Characteristic.On).updateValue(false);
           this.switchOn = false;
             
           if (!this.disableSensor) {
               this.motionTriggered = true;
               this.motionService.getCharacteristic(Characteristic.MotionDetected).updateValue(true);
-              this.log('Triggering Motion Sensor');
+              this.log('Triggering motion sensor');
               setTimeout(function() {
                   this.motionService.getCharacteristic(Characteristic.MotionDetected).updateValue(false);
                   this.motionTriggered = false;
               }.bind(this), 3000);
           }
           
-        }.bind(this), this.delay * 1000);
+        }.bind(this), this.timeout * 1000);
       }
     
       callback();
@@ -124,12 +148,20 @@ delaySwitch.prototype.getMotion = function(callback) {
     callback(null, this.motionTriggered);
 }
 
-delaySwitch.prototype.getDelay = function (callback) {
+delaySwitch.prototype.getDelay = function(callback) {
     callback(this.delay);
 }
 
-delaySwitch.prototype.setDelay = function (value, callback) {
+delaySwitch.prototype.setDelay = function(value, callback) {
     this.delay = value;
     callback();
 }
 
+delaySwitch.prototype.getRandom = function(callback) {
+    callback(this.isRandom);
+}
+
+delaySwitch.prototype.setRandom = function(value, callback) {
+    this.isRandom = value;
+    callback();
+}
