@@ -1,7 +1,7 @@
 {
     "pluginAlias": "RandomDelaySwitch",
     "pluginType": "accessory",
-    "headerDisplay": "Delay switch accessory for Homebridge, with or without a romdom delay",
+    "headerDisplay": "Delay switch accessory for Homebridge, with or without a random delay",
     "footerDisplay": "For more information see the [README](https://github.com/lisanet/homebridge-delay-switch#readme)",
     "singular": false,
     "schema": {
@@ -21,11 +21,17 @@
                 "minimum": 1,
                 "description": "The delay in seconds after which the motion sensor is triggered. (max. 3600 seconds)"
             },
+            "minDelay": {
+                "title": "Minimum Delay",
+                "type": "integer",
+                "default": 1,
+                "description": "The minimum value for a random delay in seconds (set to less than the delay)"
+            },
             "random": {
                 "title": "Random Delay",
                 "type": "boolean",
                 "default": false,
-                "description": "The delay will be a randowm value from 1 .. value above."
+                "description": "The delay will be a random value from the minimum delay to the delay value above."
             },
             "disableSensor": {
                 "title": "Disable Sensor",

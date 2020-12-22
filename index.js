@@ -17,6 +17,8 @@ function delaySwitch(log, config) {
     this.delay = config.delay;
     if (this.delay > 3600) this.delay = 3600;
     this.timeout = this.delay;
+    this.minDelay = config.minDelay;
+    if (this.minDelay > this.delay) this.minDelay = this.delay;
     this.isRandom = config.random || false;
     this.disableSensor = config.disableSensor || false;
     this.timer;
@@ -112,7 +114,7 @@ delaySwitch.prototype.setOn = function (on, callback) {
         this.switchOn = true;
     
         if (this.isRandom) {
-            this.timeout = Math.floor(Math.random() * this.delay + 1);
+            this.timeout = Math.floor(this.minDelay + Math.random() * (this.delay - this.minDelay) + 1);
         } else {
             this.timeout = this.delay;
         }
