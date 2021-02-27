@@ -66,7 +66,7 @@ delaySwitch.prototype.getServices = function () {
       .on('set', this.setDelay.bind(this));
 
     Characteristic.MinDelaySwitchTimeout = function () {
-        Characteristic.call(this, 'Minimum Delay', 'B469181F-D796-46B4-8D99-5FBE4BA9DC9D');
+        Characteristic.call(this, 'Minimum Delay', '23377804-794F-11EB-A7E2-B827EBA3E606');
         this.setProps({
             format: Characteristic.Formats.INT,
             unit: Characteristic.Units.SECONDS,
@@ -77,7 +77,7 @@ delaySwitch.prototype.getServices = function () {
         this.value = this.getDefaultValue();
     };
     inherits(Characteristic.MinDelaySwitchTimeout, Characteristic);
-    Characteristic.MinDelaySwitchTimeout.UUID = 'B469181F-D796-46B4-8D99-5FBE4BA9DC9D';
+    Characteristic.MinDelaySwitchTimeout.UUID = '23377804-794F-11EB-A7E2-B827EBA3E606';
 
     this.switchService.addCharacteristic(Characteristic.MinDelaySwitchTimeout);
     this.switchService.updateCharacteristic(Characteristic.MinDelaySwitchTimeout, this.minDelay);
