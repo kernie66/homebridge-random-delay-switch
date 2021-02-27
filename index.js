@@ -17,7 +17,7 @@ function delaySwitch(log, config) {
     this.delay = config.delay;
     if (this.delay > 3600) this.delay = 3600;
     this.timeout = this.delay;
-    this.minDelay = config.minDelay;
+    this.minDelay = config.minDelay || 1;
     if (this.minDelay > this.delay) this.minDelay = this.delay;
     this.isRandom = config.random || false;
     this.disableSensor = config.disableSensor || false;
@@ -51,7 +51,7 @@ delaySwitch.prototype.getServices = function () {
             format: Characteristic.Formats.INT,
             unit: Characteristic.Units.SECONDS,
             perms: [Characteristic.Perms.READ, Characteristic.Perms.WRITE],
-            minValue: 1,
+            minValue: this.minDelay,
             maxValue: 3600,
         });
         this.value = this.getDefaultValue();
