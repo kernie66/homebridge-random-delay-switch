@@ -51,7 +51,7 @@ delaySwitch.prototype.getServices = function () {
             format: Characteristic.Formats.INT,
             unit: Characteristic.Units.SECONDS,
             perms: [Characteristic.Perms.READ, Characteristic.Perms.WRITE],
-            minValue: this.minDelay,
+            minValue: 1,
             maxValue: 3600,
         });
         this.value = this.getDefaultValue();
@@ -64,6 +64,26 @@ delaySwitch.prototype.getServices = function () {
     this.switchService.getCharacteristic(Characteristic.DelaySwitchTimeout)
       .on('get', this.getDelay.bind(this))
       .on('set', this.setDelay.bind(this));
+
+    Characteristic.MinDelaySwitchTimeout = function () {
+        Characteristic.call(this, 'Minimum Delay', 'B469181F-D796-46B4-8D99-5FBE4BA9DC9D');
+        this.setProps({
+            format: Characteristic.Formats.INT,
+            unit: Characteristic.Units.SECONDS,
+            perms: [Characteristic.Perms.READ, Characteristic.Perms.WRITE],
+            minValue: 1,
+            maxValue: 3600,
+        });
+        this.value = this.getDefaultValue();
+    };
+    inherits(Characteristic.MinDelaySwitchTimeout, Characteristic);
+    Characteristic.MinDelaySwitchTimeout.UUID = 'B469181F-D796-46B4-8D99-5FBE4BA9DC9D';
+
+    this.switchService.addCharacteristic(Characteristic.MinDelaySwitchTimeout);
+    this.switchService.updateCharacteristic(Characteristic.MinDelaySwitchTimeout, this.minDelay);
+    this.switchService.getCharacteristic(Characteristic.MinDelaySwitchTimeout)
+      .on('get', this.getMinDelay.bind(this))
+      .on('set', this.setMinDelay.bind(this));
 
     Characteristic.RandomDelay = function () {
         Characteristic.call(this, 'Random Delay', '72227266-CA42-4442-AB84-0A7D55A0F08D');
@@ -112,6 +132,8 @@ delaySwitch.prototype.setOn = function (on, callback) {
       } else {
         this.log('Starting the timer.');
         this.switchOn = true;
+
+        if (this.minDelay > this.delay) this.minDelay = this.delay;
     
         if (this.isRandom) {
             this.timeout = Math.floor(this.minDelay + Math.random() * (this.delay - this.minDelay) + 1);
@@ -140,8 +162,6 @@ delaySwitch.prototype.setOn = function (on, callback) {
       callback();
 }
 
-
-
 delaySwitch.prototype.getOn = function (callback) {
     callback(null, this.switchOn);
 }
@@ -156,6 +176,15 @@ delaySwitch.prototype.getDelay = function(callback) {
 
 delaySwitch.prototype.setDelay = function(value, callback) {
     this.delay = value;
+    callback();
+}
+
+delaySwitch.prototype.getMinDelay = function(callback) {
+    callback(this.minDelay);
+}
+
+delaySwitch.prototype.setMinDelay = function(value, callback) {
+    this.minDelay = value;
     callback();
 }
 
