@@ -11,7 +11,7 @@
                 "title": "Name",
                 "type": "string",
                 "required": true,
-                "description": "Name of the switch. The motion sensor name will be append with 'Trigger'."
+                "description": "Name of the switch. The motion sensor name will be appended with 'Trigger'."
             },
             "delay": {
                 "title": "Delay",
