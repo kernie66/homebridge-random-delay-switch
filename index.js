@@ -21,6 +21,7 @@ function delaySwitch(log, config) {
     if (this.minDelay > this.delay) this.minDelay = this.delay;
     this.isRandom = config.random || false;
     this.disableSensor = config.disableSensor || false;
+    this.startOnReboot = config.startOnReboot || false;
     this.repeat = config.repeat || 0;
     this.timer;
     this.switchOn = false;
@@ -33,7 +34,7 @@ delaySwitch.prototype.getServices = function () {
 
     informationService
         .setCharacteristic(Characteristic.Manufacturer, "Random Delay Manufacturer")
-        .setCharacteristic(Characteristic.Model, "Random Delay Model")
+        .setCharacteristic(Characteristic.Model, "Random Delay-${this.delay}s")
         .setCharacteristic(Characteristic.SerialNumber, "47.11")
         .setCharacteristic(Characteristic.FirmwareRevision, version);
 
@@ -44,6 +45,9 @@ delaySwitch.prototype.getServices = function () {
     this.switchService.getCharacteristic(Characteristic.On)
         .on('get', this.getOn.bind(this))
         .on('set', this.setOn.bind(this));
+
+    if (this.startOnReboot)
+        this.switchService.setCharacteristic(Characteristic.On, true)
  
     // DelaySwitchTimeout Characteristic
     Characteristic.DelaySwitchTimeout = function () {
@@ -122,7 +126,7 @@ delaySwitch.prototype.getServices = function () {
 delaySwitch.prototype.setOn = function (on, callback) {
 
     if (!on) {
-        this.log('Stopping the timer.');
+        this.log('Stopping the Timer');
     
         this.switchOn = false;
         clearTimeout(this.timer);
@@ -131,7 +135,7 @@ delaySwitch.prototype.setOn = function (on, callback) {
 
         
       } else {
-        this.log('Starting the timer.');
+        this.log('Starting the Timer');
         this.switchOn = true;
 
         if (this.minDelay > this.delay) this.minDelay = this.delay;
@@ -143,14 +147,14 @@ delaySwitch.prototype.setOn = function (on, callback) {
         }
         clearTimeout(this.timer);
         this.timer = setTimeout(function() {
-          this.log('Time is up!');
+          this.log('Time is Up!');
           this.switchService.getCharacteristic(Characteristic.On).updateValue(false);
           this.switchOn = false;
             
           if (!this.disableSensor) {
               this.motionTriggered = true;
               this.motionService.getCharacteristic(Characteristic.MotionDetected).updateValue(true);
-              this.log('Triggering motion sensor');
+              this.log('Triggering Motion Sensor');
               setTimeout(function() {
                   this.motionService.getCharacteristic(Characteristic.MotionDetected).updateValue(false);
                   this.motionTriggered = false;

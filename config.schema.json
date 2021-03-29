@@ -8,13 +8,13 @@
         "type": "object",
         "properties": {
             "name": {
-                "title": "Name",
+                "title": "Accessory Name",
                 "type": "string",
                 "required": true,
                 "description": "Name of the switch. The motion sensor name will be appended with 'Trigger'."
             },
             "delay": {
-                "title": "Delay",
+                "title": "Delay Time in Seconds",
                 "type": "integer",
                 "required": true,
                 "default": 60,
@@ -38,7 +38,15 @@
                 "type": "boolean",
                 "default": false,
                 "description": "The motion sensor will be disabled."
+            },
+            "startOnReboot": {
+                "title": "Turn ON when HomeBridge Restarts",
+                "description": "When Enabled, the switch will be turned ON and start the timer when HomeBridge server restarts",
+                "type": "boolean",
+                "default": false,
+                "required": false
             }
+
         }
     }
 }

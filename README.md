@@ -19,6 +19,7 @@ The random duration is very useful if you want an automation which simulates you
           "accessory": "RandomDelaySwitch",
           "name": "MyDelaySwitchName",
           "disableSensor": false,
+          "startOnReboot": false,
           "delay": 60,
           "random": false
         }
@@ -33,6 +34,7 @@ This gives you a switch which will trigger the motion sensor after 60 seconds.
           "accessory": "RandomDelaySwitch",
           "name": "MyRandomDelaySwitchName",
           "disableSensor": false,
+          "startOnReboot": true
           "delay": 1800,
           "minDelay": 150,
           "random": true
@@ -41,6 +43,7 @@ This gives you a switch which will trigger the motion sensor after 60 seconds.
 
 ```
 This gives you a switch which will trigger the motion sensor after a random delay between 150 to 1800 seconds.
+The switch will be turned ON and start the timer when HomeBridge restarts  
 
 ## Why Adding Motion Sensor?
 
