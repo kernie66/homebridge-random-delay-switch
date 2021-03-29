@@ -2,7 +2,7 @@
     "pluginAlias": "RandomDelaySwitch",
     "pluginType": "accessory",
     "headerDisplay": "Delay switch accessory for Homebridge, with or without a random delay",
-    "footerDisplay": "For more information see the [README](https://github.com/lisanet/homebridge-delay-switch#readme)",
+    "footerDisplay": "For more information see the [README](https://github.com/kernie66/homebridge-delay-switch#readme)",
     "singular": false,
     "schema": {
         "type": "object",

@@ -61,7 +61,7 @@ these kind of automations.
 
 ## Why do we need this plugin?
 
-The main puprose is to use it with the random feature. This way you can simulate your presence at home by switch lights on and off at
+The main purpose is to use it with the random feature. This way you can simulate your presence at home by switching lights on and off at
 a random time around a configured starting time, e.g. set an automation to start at 7:00 PM, a delay of 1800 seconds and set random to true.
 Now the motion switch will be triggered between 7:00 PM and 7:30 PM at a random time.
 
@@ -74,10 +74,11 @@ Also it can be use with any device that require a certain delay time from other 
 
 ## Good to know
 
-* **When manualy turning OFF the switch, the timer will stop and the motion sensor will NOT be triggered.**
+* **When manually turning OFF the switch, the timer will stop and the motion sensor will NOT be triggered.**
 
 * **When the delay switch is getting ON command while it's already ON, the timer will restart and the motion sensor trigger will be delayed.**
 
 ## Thanks
+This plugin is forked from [Homebridge-Random-Delay-Switch](http://github.com/kernie66/homebridge-random-delay-switch)
 This switch is based on [Homebridge-Delay-Switch](https://github.com/nitaybz/homebridge-delay-switch) and [Homebridge-Automation-Switches](https://github.com/grover/homebridge-automation-switches).
 Many Thanks to @nitaybz and @grover for their good work, without that, this plugin would have never been realized so easily.

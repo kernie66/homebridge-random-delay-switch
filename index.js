@@ -21,6 +21,7 @@ function delaySwitch(log, config) {
     if (this.minDelay > this.delay) this.minDelay = this.delay;
     this.isRandom = config.random || false;
     this.disableSensor = config.disableSensor || false;
+    this.repeat = config.repeat || 0;
     this.timer;
     this.switchOn = false;
     this.motionTriggered = false;
